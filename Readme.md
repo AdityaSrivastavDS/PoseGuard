@@ -135,10 +135,33 @@ According to the **WHO**, distracted and drowsy driving causes nearly **25% of a
 
 ## 🖥️ Screenshots
 
-| Live Detection | Admin Portal | Alerts Report |
-|----------------|--------------|----------------|
-| ![Homepage](demo/landing.png) | ![Admin](demo/admin.png) | 
-| ![Report](demo/reports.png)   | ![Live](demo/live.png)   |
+<table border="0" cellpadding="10" cellspacing="0" align="center">
+  <tr>
+    <td align="center"><h3>🏠 Landing Page</h3></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="demo/Landing.png" alt="Homepage" width="500"></td>
+  </tr>
+  <tr>
+    <td align="center"><h3>🖼️ Live Detection</h3></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="demo/live.png" alt="Live Detection" width="500"></td>
+  </tr>
+  <tr>
+    <td align="center"><h3>🛡️ Admin Portal</h3></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="demo/admin.png" alt="Admin Portal" width="500"></td>
+  </tr>
+  <tr>
+    <td align="center"><h3>📊 Alerts Report</h3></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="demo/reports.png" alt="Reports" width="500"></td>
+  </tr>
+</table>
+
 
 ---
 
