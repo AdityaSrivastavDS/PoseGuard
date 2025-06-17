@@ -137,7 +137,8 @@ According to the **WHO**, distracted and drowsy driving causes nearly **25% of a
 
 | Live Detection | Admin Portal | Alerts Report |
 |----------------|--------------|----------------|
-| ![live](static/screenshots/sample1.jpg) | ![admin](static/screenshots/sample2.jpg) | ![report](static/screenshots/sample3.jpg) |
+| ![Homepage](demo/landing.png) | ![Admin](demo/admin.png) | 
+| ![Report](demo/reports.png)   | ![Live](demo/live.png)   |
 
 ---
 
