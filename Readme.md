@@ -202,5 +202,5 @@ http://127.0.0.1:5000/ in your browser.
 
 
 ## 📃 License
-This project is for academic and educational purposes only.
+Repository protected through [License](#license) and only for reasearch and educational purpose.
 
