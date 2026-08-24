@@ -1,41 +1,88 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="background-wrapper">
-    <div class="floating-shape shape1"></div>
-    <div class="floating-shape shape2"></div>
-    <div class="floating-shape shape3"></div>
-    <div class="sticker sticker1"></div>
-    <div class="sticker sticker2"></div>
+<div class="mb-8 flex justify-between items-end">
+    <div>
+        <h1 class="text-2xl font-bold text-white mb-1">Admin Portal</h1>
+        <p class="text-gray-400 text-sm">System overview and critical incident logs</p>
+    </div>
+    <div class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+        <i class="fa-solid fa-user-shield mr-1"></i> Admin Access
+    </div>
 </div>
 
+<!-- High-Level KPIs -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="flex justify-between items-start mb-2">
+            <span class="kpi-label">Total Incidents</span>
+            <div class="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center text-blue-400">
+                <i class="fa-solid fa-file-contract"></i>
+            </div>
+        </div>
+        <span class="kpi-value">{{ shots|length }}</span>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="flex justify-between items-start mb-2">
+            <span class="kpi-label">Critical Events</span>
+            <div class="w-8 h-8 rounded bg-red-500/10 flex items-center justify-center text-red-400">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+        </div>
+        <span class="kpi-value text-red-400">{{ shots|length }}</span>
+    </div>
+    
+    <div class="kpi-card">
+        <div class="flex justify-between items-start mb-2">
+            <span class="kpi-label">System Health</span>
+            <div class="w-8 h-8 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                <i class="fa-solid fa-server"></i>
+            </div>
+        </div>
+        <span class="kpi-value">100%</span>
+    </div>
+</div>
 
-<!-- Main Content Container -->
-<div class="container mx-auto px-6 py-10 relative z-10">
-    <h2 class="section-title mb-10" id="poseTitle">Unwanted Pose Screenshots</h2>
+<div class="glass-card mt-8">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-lg font-semibold text-white">Recent Critical Events</h2>
+        <a href="{{ url_for('reports') }}" class="text-sm text-blue-400 hover:text-blue-300">View All Reports</a>
+    </div>
 
     {% if shots %}
-    <div class="scrollable-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for shot in shots %}
-        <div class="glass-card shadow-lg">
-            <img src="{{ url_for('static', filename=shot.image_path.split('static/')[1]) }}"
-                 class="w-full h-48 object-cover rounded mb-4 shadow-lg border border-blue-500">
-            <p class="neon-paragraph"><strong>Email:</strong> {{ shot.user_email }}</p>
-            <p class="neon-paragraph"><strong>Type:</strong> {{ shot.alert_type }}</p>
-            <p class="text-sm text-gray-400"><strong>Time:</strong> {{ shot.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {% for shot in shots[:6] %}
+        <div class="bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden flex flex-col hover:border-gray-600 transition-colors">
+            <div class="relative w-full aspect-video bg-black">
+                <img src="{{ url_for('static', filename=shot.image_path.split('static/')[1]) }}" alt="Incident Screenshot" class="w-full h-full object-contain">
+                <div class="absolute top-2 right-2">
+                    <span class="badge badge-critical shadow-md">CRITICAL</span>
+                </div>
+            </div>
+            <div class="p-4 flex flex-col gap-2">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-sm font-semibold text-white">{{ shot.alert_type }}</h3>
+                        <p class="text-xs text-gray-400">{{ shot.user_email }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-500 mt-2">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>{{ shot.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+            </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <p class="text-center text-lg neon-paragraph mt-6">No screenshots have been recorded yet.</p>
+    <div class="text-center py-12 border border-dashed border-gray-700 rounded-lg">
+        <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-check text-emerald-500 text-xl"></i>
+        </div>
+        <h3 class="text-white font-medium mb-1">No Critical Events</h3>
+        <p class="text-gray-400 text-sm">System is clear and operating normally.</p>
+    </div>
     {% endif %}
 </div>
-
-<!-- Animations -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        gsap.from("#poseTitle", { duration: 1, opacity: 0, y: -50, ease: "power3.out" });
-        gsap.from(".glass-card", { duration: 1, opacity: 0, y: 50, stagger: 0.2, ease: "power2.out" });
-    });
-</script>
 {% endblock %}

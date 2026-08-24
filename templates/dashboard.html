@@ -1,40 +1,147 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-    <!-- Live Monitoring with camera feed (visible only to non-admin users) -->
-    {% if not is_admin %}
-    <div class="dashboard-card col-span-1 md:col-span-2 lg:col-span-2">
-        <h2 class="text-xl font-semibold">🚗 Live Monitoring</h2>
-        <p class="text-gray-400 mt-2 mb-4">Track driver activities in real-time.</p>
-        <div class="w-full overflow-hidden rounded-lg border border-gray-700">
-            <img src="{{ url_for('video_feed') }}" class="w-full" alt="Live Stream">
-        </div>
+<div class="mb-8 flex justify-between items-end">
+    <div>
+        <h1 class="text-2xl font-bold text-white mb-1">Driver Safety Command Center</h1>
+        <p class="text-gray-400 text-sm">Real-time monitoring and analytics</p>
     </div>
-    {% else %}
-    <div class="dashboard-card col-span-1 md:col-span-2 lg:col-span-2">
-        <h2 class="text-xl font-semibold">🚫 Live Monitoring Disabled</h2>
-        <p class="text-gray-400 mt-2 mb-4">Admins do not have access to live camera monitoring.</p>
+    {% if not is_admin %}
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        System Active
     </div>
     {% endif %}
+</div>
 
-    <!-- System Status -->
-    <div class="dashboard-card">
-        <h2 class="text-xl font-semibold">🛠 System Status</h2>
-        <p class="text-gray-400 mt-2">Everything is running smoothly.</p>
-        <ul class="mt-4 text-sm text-gray-400 list-disc pl-5">
-            <li>Model Loaded ✅</li>
-            <li>Live Detection Active 🎯</li>
-            <li>Audio/Visual Alerts Working 🔊</li>
-        </ul>
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <div class="flex justify-between items-start mb-2">
+            <span class="kpi-label">Current Status</span>
+            <i class="fa-solid fa-shield-check text-emerald-400 text-lg"></i>
+        </div>
+        {% if not is_admin %}
+        <span class="kpi-value text-emerald-400">Monitoring</span>
+        {% else %}
+        <span class="kpi-value text-gray-500">Idle (Admin)</span>
+        {% endif %}
+    </div>
+    <div class="kpi-card">
+        <div class="flex justify-between items-start mb-2">
+            <span class="kpi-label">System Health</span>
+            <i class="fa-solid fa-server text-blue-400 text-lg"></i>
+        </div>
+        <span class="kpi-value">Optimal</span>
+    </div>
+    <div class="kpi-card">
+        <div class="flex justify-between items-start mb-2">
+            <span class="kpi-label">AI Model</span>
+            <i class="fa-solid fa-brain text-purple-400 text-lg"></i>
+        </div>
+        <span class="kpi-value">Active</span>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Main Camera Feed Area -->
+    <div class="lg:col-span-2">
+        <div class="dashboard-card h-full flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-white">Live Camera Feed</h2>
+                {% if not is_admin %}
+                <span class="badge badge-info"><i class="fa-solid fa-camera mr-1"></i> Connected</span>
+                {% endif %}
+            </div>
+            
+            {% if not is_admin %}
+            <div class="video-container flex-grow relative group">
+                <img src="{{ url_for('video_feed') }}" alt="Live Stream">
+                <!-- Overlay Status -->
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <span class="badge badge-safe shadow-lg">SAFE</span>
+                    <span class="badge badge-info shadow-lg">100% CONF</span>
+                </div>
+                <!-- Add visual scanline effect for tech feel -->
+                <div class="absolute inset-0 pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJub25lIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9InJnYmEoMCwyNDMsMjU1LDAuMDUpIi8+Cjwvc3ZnPg==')] opacity-30"></div>
+            </div>
+            {% else %}
+            <div class="flex-grow flex flex-col items-center justify-center bg-gray-900/50 rounded-lg border border-gray-800 p-12 text-center min-h-[300px]">
+                <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-video-slash text-gray-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-white mb-2">Live Monitoring Disabled</h3>
+                <p class="text-gray-400 text-sm max-w-sm">Admins do not have access to real-time user camera feeds for privacy reasons.</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
 
-    <!-- Quick Report Access -->
-    <div class="dashboard-card">
-        <h2 class="text-xl font-semibold">📊 AI Reports</h2>
-        <p class="text-gray-400 mt-2 mb-4">View real-time AI-generated reports.</p>
-        <a href="{{ url_for('reports') }}" class="text-blue-400 underline">View Reports</a>
+    <!-- Secondary Panel -->
+    <div class="space-y-6">
+        <!-- Quick Actions -->
+        <div class="dashboard-card">
+            <h2 class="text-lg font-semibold text-white mb-4">Quick Actions</h2>
+            <div class="space-y-3">
+                <a href="{{ url_for('reports') }}" class="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700/50 hover:bg-gray-800 hover:border-blue-500/50 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded bg-blue-500/10 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-white group-hover:text-blue-400 transition-colors">View Analytics</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-blue-400"></i>
+                </a>
+                
+                {% if not is_admin %}
+                <a href="{{ url_for('video_upload') }}" class="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700/50 hover:bg-gray-800 hover:border-purple-500/50 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded bg-purple-500/10 flex items-center justify-center text-purple-400">
+                            <i class="fa-solid fa-file-video"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-white group-hover:text-purple-400 transition-colors">Upload Video</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-purple-400"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- System Checks -->
+        <div class="dashboard-card">
+            <h2 class="text-lg font-semibold text-white mb-4">System Checks</h2>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-emerald-400 text-sm"></i>
+                        <span class="text-sm text-gray-300">Model Initialized</span>
+                    </div>
+                    <span class="text-xs text-gray-500">Just now</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-emerald-400 text-sm"></i>
+                        <span class="text-sm text-gray-300">Camera Permission</span>
+                    </div>
+                    <span class="text-xs text-gray-500">Just now</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-emerald-400 text-sm"></i>
+                        <span class="text-sm text-gray-300">Audio Alerts</span>
+                    </div>
+                    <span class="text-xs text-gray-500">Active</span>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+    
+</div>
 {% endblock %}

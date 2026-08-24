@@ -1,27 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="flex justify-center items-center h-screen relative">
-    <canvas id="bgCanvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+<div class="flex items-center justify-center min-h-[75vh]">
+    <div class="glass-card w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 mb-4">
+                <i class="fa-solid fa-shield-halved text-blue-400 text-xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Welcome back</h2>
+            <p class="text-gray-400 text-sm">Sign in to access your dashboard</p>
+        </div>
 
-    <div class="glass-card w-96 relative z-10 flex flex-col items-center">
-        <h2 class="text-3xl font-bold text-center mb-6">🔑 Login</h2>
-
-        <!-- Error Message -->
         {% if error %}
-        <p class="text-red-400 text-center">{{ error }}</p>
+        <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            {{ error }}
+        </div>
         {% endif %}
 
-        <form method="POST" id="login-form" class="w-full flex flex-col">
-            <input type="text" name="username" placeholder="Email or Username" class="input-field" required>
-            <input type="password" name="password" placeholder="Password" class="input-field" required>
+        <form method="POST" id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1.5">Email or Username</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-user text-gray-500 text-sm"></i>
+                    </div>
+                    <input type="text" name="username" placeholder="admin@poseguard.com" class="input-field pl-10 !mb-0" required>
+                </div>
+            </div>
 
-            <button type="submit" class="btn-primary">Login 🚀</button>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-lock text-gray-500 text-sm"></i>
+                    </div>
+                    <input type="password" name="password" placeholder="••••••••" class="input-field pl-10 !mb-0" required>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="btn-primary w-full shadow-lg shadow-blue-500/20">
+                    Sign In
+                </button>
+            </div>
         </form>
 
-        <p class="text-gray-400 mt-4 text-center">New user? 
-            <a href="{{ url_for('signup') }}" class="text-blue-400 hover:underline">Create an account</a>
+        <p class="text-gray-400 text-sm mt-8 text-center">
+            Don't have an account? 
+            <a href="{{ url_for('signup') }}" class="text-blue-400 font-medium hover:text-blue-300 transition-colors">Create one</a>
         </p>
     </div>
-</section>
+</div>
 {% endblock %}

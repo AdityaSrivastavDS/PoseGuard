@@ -1,7 +1,6 @@
+import os
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
-import os
 import tensorflow as tf
 
 # Enable GPU memory growth to prevent TF from taking all GPU memory
@@ -15,11 +14,12 @@ if physical_devices:
 
 # Ensure model path is correct using absolute path
 current_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(current_dir, 'model', 'poseguard_model.h5')
+# Loading the converted Keras 3 native model
+model_path = os.path.join(current_dir, 'model', 'poseguard_model.keras')
 
 # Load model only once when module is imported
 try:
-    model = load_model(model_path)
+    model = tf.keras.models.load_model(model_path)
 except Exception as e:
     print(f"Error loading model: {e}")
     raise

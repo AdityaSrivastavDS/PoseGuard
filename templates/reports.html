@@ -1,55 +1,100 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<!-- Floating Shapes -->
-<div class="floating-shape"></div>
-<div class="floating-shape"></div>
-<div class="floating-shape"></div>
-
-<div class="container px-6 py-10">
-    <h1 class="section-title" id="reportTitle">AI Alert Reports</h1>
-
-    {% if alerts %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {% for alert in alerts %}
-        <div class="glass-card report-card opacity-0 transform scale-90">
-            <h2 class="text-xl neon-text mb-2">🚨 {{ alert.alert_type }}</h2>
-            <p class="neon-paragraph">Detected for: <span class="font-semibold text-white">{{ alert.user_email }}</span></p>
-            <p class="text-sm text-gray-400 mt-1">At: {{ alert.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</p>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p class="text-center text-lg neon-paragraph mt-6">No alerts have been recorded yet. Monitoring is active...</p>
-    {% endif %}
-
-    <h2 class="section-title mt-16 mb-6">Screenshots</h2>
-    {% if screenshots %}
-    <div class="scrollable-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for screenshot in screenshots %}
-        <div class="glass-card">
-            <img src="{{ url_for('static', filename=screenshot.image_path.split('static/')[1]) }}" 
-                 class="w-full h-48 object-cover rounded mb-4 shadow-lg border border-blue-500">
-            <p class="neon-paragraph"><strong>Email:</strong> {{ screenshot.user_email }}</p>
-            <p class="neon-paragraph"><strong>Type:</strong> {{ screenshot.alert_type }}</p>
-            <p class="text-sm text-gray-400"><strong>Time:</strong> {{ screenshot.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</p>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p class="text-center text-lg neon-paragraph mt-6">No screenshots have been recorded yet.</p>
-    {% endif %}
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-white mb-1">Incident History & Reports</h1>
+    <p class="text-gray-400 text-sm">Comprehensive log of all detected events and system alerts</p>
 </div>
 
-<!-- Optional floating stickers (star.png or any sticker) -->
-<div class="sticker"></div>
-<div class="sticker"></div>
+<!-- Tabs for Log Types -->
+<div class="border-b border-gray-800 mb-6 flex gap-6">
+    <button class="px-1 py-3 border-b-2 border-blue-500 text-blue-400 text-sm font-medium">
+        Screenshots & Critical Events
+    </button>
+    <button class="px-1 py-3 border-b-2 border-transparent text-gray-400 hover:text-gray-300 text-sm font-medium cursor-not-allowed opacity-50" title="Coming soon">
+        All System Alerts
+    </button>
+</div>
 
-<!-- Animation Script -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        gsap.from("#reportTitle", { duration: 1, opacity: 0, y: -50, ease: "power3.out" });
-        gsap.to(".report-card", { duration: 1, opacity: 1, scale: 1, stagger: 0.3, ease: "power3.out" });
-    });
-</script>
+<!-- Filter Bar (UI Only) -->
+<div class="flex gap-4 mb-6">
+    <div class="relative flex-grow max-w-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
+        </div>
+        <input type="text" placeholder="Search incidents..." class="input-field pl-10 !mb-0" disabled>
+    </div>
+    <select class="input-field !mb-0 !w-auto cursor-not-allowed" disabled>
+        <option>All Severities</option>
+        <option>Critical</option>
+        <option>Warning</option>
+    </select>
+    <button class="btn-primary !w-auto !bg-gray-800 !text-gray-300 hover:!bg-gray-700 !border !border-gray-700 cursor-not-allowed">
+        <i class="fa-solid fa-download mr-2"></i> Export
+    </button>
+</div>
+
+<div class="glass-card !p-0 overflow-hidden">
+    {% if screenshots %}
+    <div class="table-container !border-0 !rounded-none">
+        <table class="w-full">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Driver/User</th>
+                    <th>Incident Type</th>
+                    <th>Severity</th>
+                    <th>Screenshot</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shot in screenshots %}
+                <tr class="hover:bg-gray-800/30 transition-colors">
+                    <td class="whitespace-nowrap">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-gray-500 text-xs"></i>
+                            {{ shot.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">
+                                {{ shot.user_email[0]|upper }}
+                            </div>
+                            <span class="text-gray-300">{{ shot.user_email }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="text-white font-medium">{{ shot.alert_type }}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-critical">CRITICAL</span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('static', filename=shot.image_path.split('static/')[1]) }}" target="_blank" class="block w-24 h-14 rounded bg-black border border-gray-700 overflow-hidden relative group hover:border-blue-500 transition-colors">
+                            <img src="{{ url_for('static', filename=shot.image_path.split('static/')[1]) }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition-opacity">
+                                <i class="fa-solid fa-up-right-and-down-left-from-center text-white text-xs"></i>
+                            </div>
+                        </a>
+                    </td>
+                    <td>
+                        <span class="badge badge-info bg-gray-800 text-gray-300 border border-gray-700">LOGGED</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-16">
+        <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-file-circle-check text-gray-500 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-white mb-2">No Incidents Recorded</h3>
+        <p class="text-gray-400 text-sm">There are no screenshot alerts in the system.</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
